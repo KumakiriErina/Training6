@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMessage;
 import org.seasar.framework.container.SingletonS2Container;
 import org.seasar.struts.annotation.ActionForm;
 import org.seasar.struts.annotation.Execute;
@@ -23,7 +25,7 @@ import training6.service.ResultService;
  * @author e_kumakiri
  *
  */
-public class ResultAction {
+public class ResultAction extend Action{
 
 	/**resultForm*/
 	@Resource
@@ -110,8 +112,15 @@ public class ResultAction {
 
 		}catch(ParseException pe) {
 
-			//うまくいかなかった場合に表示
-			System.out.println("変換がうまくいきませんでした");
+			//Date型への変換がうまくいかなかった場合
+			ActionErrors errors = new ActionErrors();
+
+			//messageを格納するリストの作成して、キー値でpropertiesを検索している
+			ActionMessage msg = new ActionMessage("errors.msg.key1");
+			errors.add(ActionErrors.GLOBAL_MESSAGE, msg);
+
+			//親クラスのメソッドを呼び出す
+			addErrors(request, errors);	
 		}
 		
 		//結果画面に遷移
